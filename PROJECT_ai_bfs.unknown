@@ -1,0 +1,51 @@
+from collections import deque
+
+def bfs(curr1, curr2, destination):
+    queue = deque()
+    queue.append((max(curr1, curr2), min(curr1, curr2), 0, [max(curr1, curr2)], [min(curr1, curr2)]))
+    visited = set()
+
+    while queue:
+        curr1, curr2, transfers, path1, path2 = queue.popleft()
+        
+        if curr1 == destination or curr2 == destination:
+            return (transfers, path1, path2)
+        
+        if abs(curr1 - curr2) % 3 != 0:
+            continue
+        
+        if (curr1, curr2) in visited:
+            continue
+        
+        visited.add((curr1, curr2))
+        
+        if curr1 > curr2:
+            next1 = curr1 + 2
+            next2 = curr2 + 5
+        else:
+            next1 = curr1 + 5
+            next2 = curr2 + 2
+        
+        queue.append((next1, next2, transfers + 1, path1 + [next1], path2 + [next2]))
+        queue.append((next2, next1, transfers + 1, path1 + [next2], path2 + [next1]))
+
+    print("Destination can't be reached with given constraints")
+    return -1
+
+def find_path():
+    curr1 = int(input("Enter starting station of key 1: "))
+    curr2 = int(input("Enter starting station of key 2: "))
+    destination = int(input("Enter the destination station of the keys: "))
+
+    result = bfs(curr1, curr2, destination)
+
+    if type(result) is tuple:
+        transfers, path1, path2 = result
+        print('Number of transfers: ', transfers)
+        print('Paths followed by the keys: ')
+        print(*path1)
+        print(*path2)
+    else:
+        print(result)
+
+find_path()
